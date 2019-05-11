@@ -37,7 +37,13 @@ public class Controller {
         game.movePlayer(player,2, 3);
         System.out.println(game.displayBoard());
 
-        
+        game.movePlayer(player,2, 3);
+        System.out.println(game.displayBoard());
+        System.out.println(player.getArtifacts());
+
+        game.movePlayer(player,1, 5);
+        System.out.println(game.displayBoard());
+        System.out.println(player.getArtifacts());
     }
 
 }
