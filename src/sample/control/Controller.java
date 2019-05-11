@@ -39,11 +39,15 @@ public class Controller {
 
         game.movePlayer(player,2, 3);
         System.out.println(game.displayBoard());
+        txtAreaGameOutput.appendText(game.displayBoard() + "\n");
         System.out.println(player.getArtifacts());
+        txtAreaGameOutput.appendText(player.getArtifacts() + "\n") ;
 
         game.movePlayer(player,1, 5);
         System.out.println(game.displayBoard());
+        txtAreaGameOutput.appendText(game.displayBoard() + "\n");
         System.out.println(player.getArtifacts());
+        txtAreaGameOutput.appendText(player.getArtifacts()+ "\n");
     }
 
 }
