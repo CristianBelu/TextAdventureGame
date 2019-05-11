@@ -25,9 +25,19 @@ public class Controller {
         game.placeOnBoard(key,2, 3);
         game.placeOnBoard(door, 1, 5);
         game.placeOnBoard(player,5,5);
+        player.setPosition(5,5);
 
 
         System.out.println(game.displayBoard());
+
+        game.removeFromBoard(2, 3);
+        System.out.println(game.displayBoard());
+
+        game.placeOnBoard(key,2, 3);
+        game.movePlayer(player,2, 3);
+        System.out.println(game.displayBoard());
+
+        
     }
 
 }
