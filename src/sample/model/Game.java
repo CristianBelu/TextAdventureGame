@@ -125,6 +125,12 @@ public class Game {
             player.setPosition(horizontal,vertical);
             return true;
         }
+        else if (gameBoard[horizontal][vertical] == null){
+            gameBoard[player.getHorizontal()][player.getVertical()] = null;
+            gameBoard[horizontal][vertical] = player;
+            player.setPosition(horizontal,vertical);
+            return true;
+        }
         return false;
     }
 }

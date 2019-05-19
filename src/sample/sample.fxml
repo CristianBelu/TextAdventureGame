@@ -12,14 +12,22 @@
    <center>
       <AnchorPane prefHeight="600.0" prefWidth="900.0" BorderPane.alignment="CENTER">
          <children>
-            <Pane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Label layoutX="14.0" layoutY="14.0" text="Command" />
-                  <TextField fx:id="txtFieldCommand" layoutX="14.0" layoutY="46.0" prefHeight="25.0" prefWidth="876.0" />
+                  <AnchorPane layoutX="14.0" layoutY="46.0">
+                     <children>
+                        <TextField fx:id="txtFieldCommand" onKeyReleased="#processCommand" prefHeight="25.0" prefWidth="878.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
                   <Label layoutX="14.0" layoutY="89.0" text="Output" />
                   <ScrollPane layoutX="14.0" layoutY="106.0">
                      <content>
-                        <TextArea fx:id="txtAreaGameOutput" prefHeight="200.0" prefWidth="871.0" />
+                        <AnchorPane prefHeight="191.0" prefWidth="881.0">
+                           <children>
+                              <TextArea fx:id="txtAreaGameOutput" layoutX="-13.0" prefHeight="191.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
                      </content>
                   </ScrollPane>
                </children>
