@@ -101,7 +101,7 @@ public class Game {
                         int newHorizontal = gameBoards.get(currentBoadIndex).getPortalHorizontal(connectedBoard);
                         int newVertical = gameBoards.get(currentBoadIndex).getPortalVertical(connectedBoard);
                         currentBoadIndex = i;
-                        
+
                         gameBoards.get(currentBoadIndex).placeOnBoard(player,newHorizontal,newVertical);
                         player.setPosition(newHorizontal, newVertical);
                         break;
