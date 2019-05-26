@@ -1,5 +1,6 @@
 package game;
 
+import game.helper.SqliteWrapper;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +20,13 @@ public class Main extends Application {
     }
 
 
+
     public static void main(String[] args) {
+
+        // create the database and all the tables in the app
+        SqliteWrapper wrapper = new SqliteWrapper();
+        wrapper.createAllTables();
+        wrapper.getAllArtifactsPositions();
 
         launch(args);
     }

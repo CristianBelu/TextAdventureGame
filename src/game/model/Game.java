@@ -1,33 +1,33 @@
 package game.model;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
     private List<GameBoard> gameBoards;
-    private int currentBoadIndex;
+    private int currentBoardIndex;
 
     /**
      * Create a game object
-     *
      */
     public Game() {
-        // initialize the list that will contain all the Game Boards of the game
-        gameBoards = new ArrayList<>();
+        gameBoards = new ArrayList<>(); // initialize the list that will hold all the game boards of this game
+        //TODO: load game boards
 
-        // ToDo load game boards
+        //just for tests - TODO: remove in production
+        GameBoard gameBoardForest = new GameBoard("forest", 10);
+        GameBoard gameBoardDungeon = new GameBoard("dungeon", 9);
 
-        // just for test - ToDo: remove in production
-        GameBoard gameBoardForest = new GameBoard("Forest",10);
-        GameBoard gameBoardDungeon = new GameBoard("Dungeon",9);
         gameBoards.add(gameBoardForest);
         gameBoards.add(gameBoardDungeon);
 
         gameBoardDungeon.addConnectedBoard(gameBoardForest, 0, 4);
         gameBoardForest.addConnectedBoard(gameBoardDungeon, 9, 9);
 
-        currentBoadIndex = 0;
+        currentBoardIndex = 0;
     }
+
 
     /**
      * This method will add an object to the board in the given position
@@ -40,7 +40,8 @@ public class Game {
      * the board
      */
     public boolean placeOnBoard(Object obj, int horizontal, int vertical) {
-        return gameBoards.get(currentBoadIndex).placeOnBoard(obj,horizontal,vertical);
+
+        return gameBoards.get(currentBoardIndex).placeOnBoard(obj, horizontal, vertical);
     }
 
     /**
@@ -51,9 +52,8 @@ public class Game {
      * @return the object to remove; null if the cell is empty
      */
     public Object removeFromBoard(int horizontal, int vertical) {
-        return gameBoards.get(currentBoadIndex).removeFromBoard(horizontal,vertical);
+        return gameBoards.get(currentBoardIndex).removeFromBoard(horizontal, vertical);
     }
-
 
     /**
      * Moves the object from the gameBoard to a new position
@@ -64,62 +64,72 @@ public class Game {
      *                   return true if you can move
      */
     public boolean movePlayer(Player player, int horizontal, int vertical) {
-        // ToDo: Allow player and collectable to be on the same box
 
-        if (vertical >= gameBoards.get(currentBoadIndex).getBoardSize() ||
-                horizontal >= gameBoards.get(currentBoadIndex).getBoardSize())
-        {
-            throw new IllegalArgumentException("Should be smaller than " + gameBoards.get(currentBoadIndex).getBoardSize());
+        //TODO: Allow player and collectible to be on the same box
+
+        if (vertical >= gameBoards.get(currentBoardIndex).getBoardSize() ||
+                horizontal >= gameBoards.get(currentBoardIndex).getBoardSize()) {
+            throw new IllegalArgumentException("Should be smaller than " +
+                    gameBoards.get(currentBoardIndex).getBoardSize());
         }
 
+        boolean playerCanMove;// = false;
 
-
-        boolean playerCanMove; // =false
-
-
-        if(gameBoards.get(currentBoadIndex).getGameBoardObject(horizontal, vertical) == null) {
-
+        if (gameBoards.get(currentBoardIndex).getGameBoardObject(horizontal, vertical) == null) {
             playerCanMove = true;
-        }
-
-        else if (gameBoards.get(currentBoadIndex).getGameBoardObject(horizontal, vertical) instanceof CollectibleItem) {
-            player.collect( (CollectibleItem) gameBoards.get(currentBoadIndex).getGameBoardObject(horizontal, vertical) );
-            gameBoards.get(currentBoadIndex).removeFromBoard(horizontal,vertical); // remove collectable from board
+        } else if (gameBoards.get(currentBoardIndex).getGameBoardObject(horizontal, vertical) instanceof CollectibleItem) {
+            player.collect((CollectibleItem) gameBoards.get(currentBoardIndex).getGameBoardObject(horizontal, vertical));
+            gameBoards.get(currentBoardIndex).removeFromBoard(horizontal, vertical); // remove collectible from board
             playerCanMove = true;
-        }
-        else {
+        } else {
+            // item is nor collectible, nor null
             playerCanMove = false;
         }
 
-        if (playerCanMove){
-            gameBoards.get(currentBoadIndex).removeFromBoard(player.getHorizontal(),player.getVertical());// remove player from his old position
+        if (playerCanMove) {
+            gameBoards.get(currentBoardIndex).removeFromBoard(player.getHorizontal(), player.getVertical()); // remove player from his/hers old position
 
-            GameBoard connectedBoard =  gameBoards.get(currentBoadIndex).isAPortalToOtherGameBoard(horizontal,vertical);
-            if (null != connectedBoard){
-                for (int i = 0; i < gameBoards.size() ; i++) {
-                    if (gameBoards.get(i).equals(connectedBoard)){
-                        int newHorizontal = gameBoards.get(currentBoadIndex).getPortalHorizontal(connectedBoard);
-                        int newVertical = gameBoards.get(currentBoadIndex).getPortalVertical(connectedBoard);
-                        currentBoadIndex = i;
+            GameBoard connectedBoard = gameBoards.get(currentBoardIndex).isAPortalToOtherGameBoard(horizontal, vertical);
+            if (null != connectedBoard) {
+                for (int i = 0; i < gameBoards.size(); i++) {
+                    if (gameBoards.get(i).equals(connectedBoard)) {
 
-                        gameBoards.get(currentBoadIndex).placeOnBoard(player,newHorizontal,newVertical);
+                        // see in the Map of the new board, the link to the old board and get coordinates
+                        // gameBoards.get(currentBoardIndex) .getHor (connectedBoard)
+
+                        int newHorizontal = gameBoards.get(currentBoardIndex).getPortalHorizontal(connectedBoard);
+                        int newVertical = gameBoards.get(currentBoardIndex).getPortalVertical(connectedBoard);
+                        currentBoardIndex = i;
+                        gameBoards.get(currentBoardIndex).placeOnBoard(player, newHorizontal, newVertical); // place player in the new position given by parameters
                         player.setPosition(newHorizontal, newVertical);
                         break;
                     }
                 }
             }
+
             else {
-                gameBoards.get(currentBoadIndex).placeOnBoard(player,horizontal,vertical);
+                gameBoards.get(currentBoardIndex).placeOnBoard(player, horizontal, vertical); // place player in the new position given by parameters
                 player.setPosition(horizontal, vertical);
             }
+
+
+
         }
 
         return playerCanMove;
-
     }
-
 
     public String displayBoard() {
-       return gameBoards.get(currentBoadIndex).toString();
+        return gameBoards.get(currentBoardIndex).toString();
     }
+
+    public int getCurrentBoardIndex() {
+        return currentBoardIndex;
+    }
+
+    public List<GameBoard> getGameBoards() {
+        return gameBoards;
+    }
+
+
 }

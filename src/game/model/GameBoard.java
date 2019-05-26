@@ -1,39 +1,27 @@
 package game.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GameBoard {
-    // static field incremented on each creation of a new GameBoard Object
-    private static int lastId = 0;
+    private static int lastId = 0; // static field is incremented at each creation of a new GameBoard Object
 
-    // id to identify a unique game board
-    private int uniqueId;
+    private int uniqueId; // id to uniquely identify a game board.
 
-    // the place where the player could be on the game , multiple game boards can exist
-    private String boardName;
+    private String boardName; // the name of the current "map" where a player can be at a time
 
-    // the game board will have a variable size ( boardSize X boardSize )
-    private int boardSize;
+    private int boardSize; // the game board will have an array of boardSize x boardSize
 
-    // the actual board where the artefacts/ playes / actors will rest
-    private Object [][] gameBoardObjects;
+    private Object[][] gameBoardObjects; // the actual board where the artifacts/actors/player will rest
 
-    private int portalHorizontal;
-    private int portalVertical;
-
-    // list of connections between boards
-    private Map<GameBoard, List<Integer>> connectedBoards;
+    // e.g. < gameBoard: "forest", id = 1, < 1 (horizontal), 2 (vertical) > >
+    private Map<GameBoard, List<Integer>> connectedGameBoards;
 
     public GameBoard(String boardName, int boardSize) {
         this.boardName = boardName;
         this.boardSize = boardSize;
         gameBoardObjects = new Object[boardSize][boardSize];
-        connectedBoards = new HashMap<>();
-        uniqueId = lastId++;
-
+        connectedGameBoards = new HashMap<>();
+        uniqueId = lastId ++;
     }
 
     /**
@@ -62,6 +50,7 @@ public class GameBoard {
         }
         return true;
     }
+
     /**
      * Removes an object from the board
      *
@@ -70,7 +59,7 @@ public class GameBoard {
      * @return the object to remove; null if the cell is empty
      */
     public Object removeFromBoard(int horizontal, int vertical) {
-        if (vertical >= boardSize|| horizontal >= boardSize) {
+        if (vertical >= boardSize || horizontal >= boardSize) {
             throw new IllegalArgumentException("Should be smaller than " + boardSize);
         }
 
@@ -79,12 +68,13 @@ public class GameBoard {
 
         return toRemove;
     }
-    /*
-       Door      Key                        Player
-                Tree
 
-            a cell is maximum 10 spaces size   . We put an artifact in the middle of the cell
-    */
+    /*
+        Door      Key                        Player
+                 Tree
+
+             a cell is maximum 10 spaces size   . We put an artifact in the middle of the cell
+     */
     private final int CELL_DISPLAY_SIZE = 12;
 
     private String generateSpaces(int number) {
@@ -105,7 +95,7 @@ public class GameBoard {
 
     @Override
     public String toString() {
-        String toReturn = this.boardName+ "\n";
+        String toReturn = this.boardName + "\n";
 
         /* generate head of table */
         toReturn += generateSpaces(CELL_DISPLAY_SIZE);
@@ -139,17 +129,24 @@ public class GameBoard {
     public Object getGameBoardObject(int horizontal, int vertical) {
         return gameBoardObjects[horizontal][vertical];
     }
-    public void addConnectedBoard(GameBoard gameBoard, int horizontal, int vertical){
+
+    /**
+     * Ads a board to the internal connected boards list
+     * @param gameBoard
+     */
+    public void addConnectedBoard(GameBoard gameBoard, int horizontal, int vertical) {
         List<Integer> coordinates = new ArrayList<>();
         coordinates.add(horizontal);
         coordinates.add(vertical);
-        connectedBoards.put(gameBoard,coordinates);
+
+        connectedGameBoards.put(gameBoard, coordinates );
     }
 
-    public GameBoard isAPortalToOtherGameBoard (int horizontal, int vertical){
-        for (Map.Entry<GameBoard, List<Integer>> entry : connectedBoards.entrySet()) {
+    public GameBoard isAPortalToOtherGameBoard(int horizontal, int vertical) {
+        for (Map.Entry<GameBoard, List<Integer>> entry : connectedGameBoards.entrySet()
+        ) {
 
-            if (entry.getValue().get(0) == horizontal && entry.getValue().get(1) == vertical){
+            if( entry.getValue().get(0) == horizontal &&  entry.getValue().get(1) == vertical ) {
                 return entry.getKey();
             }
         }
@@ -157,14 +154,69 @@ public class GameBoard {
     }
 
     public int getPortalHorizontal(GameBoard connectedBoard) {
-        return connectedBoard.getConnectedBoards().get(this).get(0);
+        return connectedBoard.getConnectedGameBoards().get(this).get(0);
     }
 
     public int getPortalVertical(GameBoard connectedBoard) {
-        return connectedBoard.getConnectedBoards().get(this).get(1);
+        return connectedBoard.getConnectedGameBoards().get(this).get(1);
     }
 
-    public Map<GameBoard, List<Integer>> getConnectedBoards(){
-        return connectedBoards;
+    public Map<GameBoard, List<Integer>> getConnectedGameBoards() {
+        return connectedGameBoards;
     }
+
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    public String getName() {
+        return this.boardName;
+    }
+
+    public int artifactHorizontalPosition(Artifact artifact) {
+
+        for (int horizontal = 0; horizontal < boardSize; horizontal++)
+            for (int vertical = 0; vertical < boardSize; vertical++) {
+                if (gameBoardObjects[horizontal][vertical] !=null &&
+                        gameBoardObjects[horizontal][vertical].equals(artifact)) {
+                    return horizontal;
+                }
+            }
+        return -1;
+    }
+
+    public int artifactVerticalPosition(Artifact artifact) {
+
+        for (int horizontal = 0; horizontal < boardSize; horizontal++)
+            for (int vertical = 0; vertical < boardSize; vertical++) {
+                if (gameBoardObjects[horizontal][vertical] !=null &&
+                        gameBoardObjects[horizontal][vertical].equals(artifact)) {
+                    return vertical;
+                }
+            }
+        return -1;
+    }
+
+    public Map<Artifact, List<Integer>> getArtifactsPositions() {
+        HashMap<Artifact, List<Integer>> artifactListHashMap = new HashMap<>();
+
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (gameBoardObjects[i][j] instanceof Artifact) {
+                    List<Integer> coordinates = new ArrayList<>();
+                    coordinates.add(i); //horizontal
+                    coordinates.add(j); // vertical
+
+                    artifactListHashMap.put((Artifact) gameBoardObjects[i][j], coordinates);
+                }
+            }
+        }
+        return artifactListHashMap;
+    }
+
+
 }
